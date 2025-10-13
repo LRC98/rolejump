@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import Link from "next/link";       // ← add this
 import NavLinks from "./NavLinks";
 
 export const metadata: Metadata = {
@@ -11,17 +12,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-gray-900">
-        {/* Top Navigation */}
         <header className="border-b bg-white">
           <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
-            <a href="/" className="text-xl font-semibold tracking-tight">
+            <Link href="/" className="text-xl font-semibold tracking-tight">
               RoleJump
-            </a>
+            </Link>
             <NavLinks />
           </div>
         </header>
 
-        {/* Page content */}
         <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
 
         <footer className="mt-16 border-t">
