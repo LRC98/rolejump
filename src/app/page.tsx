@@ -120,9 +120,10 @@ export default function Home() {
       } else {
         setResults(data);
       }
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong");
-    } finally {
+    } catch (err: unknown) {
+  const message = err instanceof Error ? err.message : "Something went wrong";
+  setError(message);
+  } finally {
       setSubmitting(false);
     }
   }
@@ -162,7 +163,6 @@ export default function Home() {
               placeholder="e.g., Actuary, Accountant, Business Analyst"
               className="w-full rounded-xl border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               aria-autocomplete="list"
-              aria-expanded={suggestions.length > 0}
               aria-controls="role-suggestions"
             />
             {/* Suggestions dropdown */}
