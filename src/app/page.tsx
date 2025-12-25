@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type MatchResult = {
   role: { slug: string; title: string };
@@ -82,6 +82,12 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(()=> setMounted(true), []);
+
+
   // simple client-side suggestions
   const suggestions = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -120,11 +126,11 @@ export default function Home() {
       } else {
         setResults(data);
       }
-    } catch (err: any) {
-      setError(err?.message || "Something went wrong");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err: unknown) {
+  const message =
+    err instanceof Error ? err.message : "Something went wrong";
+  setError(message);
+}
   }
 
   function handleChooseSuggestion(s: string) {
@@ -153,18 +159,20 @@ export default function Home() {
           </label>
           <div className="relative mt-1">
             <input
-              type="text"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setSelectedRole(null);
-              }}
-              placeholder="e.g., Actuary, Accountant, Business Analyst"
-              className="w-full rounded-xl border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              aria-autocomplete="list"
-              aria-expanded={suggestions.length > 0}
-              aria-controls="role-suggestions"
-            />
+  type="text"
+  value={query}
+  onChange={(e) => {
+    setQuery(e.target.value);
+    setSelectedRole(null);
+    setOpen(true); // optional but recommended if you’re using open state
+  }}
+  placeholder="e.g., Actuary, Accountant, Business Analyst"
+  className="w-full rounded-xl border border-gray-300 p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  aria-autocomplete="list"
+  {...(mounted && open && suggestions.length > 0
+    ? { "aria-controls": "role-suggestions" }
+    : {})}
+/>
             {/* Suggestions dropdown */}
             {suggestions.length > 0 && (
               <ul
@@ -317,5 +325,3 @@ export default function Home() {
     </main>
   );
 }
-
-
